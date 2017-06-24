@@ -54,6 +54,8 @@
 
     <script>
         var Game = {};
+        var connectionValid = false;
+        var startRan = false;
         var connectedUserId;
         var timeConnected;
         var userIndex = 0;
@@ -78,23 +80,42 @@
             if (NAF.connection.isConnected()) {
                 //clearInterval(Game._intervalId);
 
-               // console.log("connected " + connectedUserId);
+                // console.log("connected " + connectedUserId);
+                NAF.connection.broadcastDataGuaranteed("ping", "");
+                NAF.connection.subscribeToDataChannel("ping", TestPing);
+                NAF.connection.subscribeToDataChannel("pong", TestPong);
 
                 NAF.connection.subscribeToDataChannel("pingConnectedUsers", ReplyToPing);
                 NAF.connection.subscribeToDataChannel("pingReply", IncreaseIndex);
 
-                NAF.connection.broadcastDataGuaranteed("pingConnectedUsers", "hello");
+                if (connectionValid && !startRan) {
+                    Start();
+                }
             }
         };
 
+        function TestPing(){
+            NAF.connection.broadcastDataGuaranteed("pong", "");
+        }
+        function TestPong(){
+            connectionValid = true;
+        }
+
+
+        function Start() {
+            console.log("start");
+            startRan = true;
+            NAF.connection.broadcastDataGuaranteed("pingConnectedUsers", "");
+        }
+
         function ReplyToPing(e) {
-            var userInfo = { id: connectedUserId, time: timeConnected };
+            var userInfo = { uid: connectedUserId, time: timeConnected };
             NAF.connection.broadcastDataGuaranteed("pingReply", userInfo);
         }
 
         function IncreaseIndex(data) {
             userIndex++;
-            console.log(data.arguments);
+            console.log(data);
         }
 
         function ToggleMic(value) {
