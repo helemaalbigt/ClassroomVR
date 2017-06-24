@@ -53,16 +53,76 @@
     </a-scene>
 
     <script>
+        var Game = {};
+        var connectedUserId;
+        var timeConnected;
+        var userIndex = 0;
+        Game.fps = 10;
+
+        //set up user id and the time the user was created
+        window.onload = function () {
+            connectedUserId = RandomString(8);
+            timeConnected = new Date().getTime();
+            console.log("new user " + connectedUserId + ", created at " + timeConnected);
+        };
+
+        Game.run = function () {
+            Game.update();
+        };
+
+        // Start the game loop
+        Game._intervalId = setInterval(Game.run, 1000 / Game.fps);
+
+        //game loop
+        Game.update = function () {
+            if (NAF.connection.isConnected()) {
+                //clearInterval(Game._intervalId);
+
+               // console.log("connected " + connectedUserId);
+
+                NAF.connection.subscribeToDataChannel("pingConnectedUsers", ReplyToPing);
+                NAF.connection.subscribeToDataChannel("pingReply", IncreaseIndex);
+
+                NAF.connection.broadcastDataGuaranteed("pingConnectedUsers", "hello");
+            }
+        };
+
+        function ReplyToPing(e) {
+            var userInfo = { id: connectedUserId, time: timeConnected };
+            NAF.connection.broadcastDataGuaranteed("pingReply", userInfo);
+        }
+
+        function IncreaseIndex(data) {
+            userIndex++;
+            console.log(data.arguments);
+        }
+
+        function ToggleMic(value) {
+            easyrtc.enableMicrophone(value);
+        }
+
+        function RandomString(length) {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            for (var i = 0; i < length; i++) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return text;
+        }
+
+
         window.onkeyup = function (e) {
             var key = e.keyCode ? e.keyCode : e.which;
 
             if (key == 38) {
                 console.log("turn mic on");
+                ToggleMic(true);
+                //NAF.connection.broadcastDataGuaranteed(dataType, data);
             } else if (key == 40) {
                 console.log("turn mic off");
+                ToggleMic(false);
             }
         }
-
 
     </script>
   </body>
