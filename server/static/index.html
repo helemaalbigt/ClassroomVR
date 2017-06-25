@@ -4,9 +4,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
     <script src="easyrtc/easyrtc.js"></script>
     <script src="https://unpkg.com/networked-aframe/dist/networked-aframe.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   </head>
   <body>
-    <a-scene networked-scene="room: room1; debug: true; webrtc: true; webrtcAudio: true"> <!-- app: classroomVR;  -->
+    <a-scene networked-scene="app: classroomVR; room: room1; debug: true; webrtc: true; webrtcAudio: true">
 
         <a-assets>
           <img id="floor" src="https://img.gs/bbdkhfbzkk/stretch/https://i.imgur.com/25P1geh.png" crossorigin="anonymous">
