@@ -82,6 +82,10 @@
         var timeConnected;
         var userIndex = 0;
         var connectedUsers = new Array();
+
+        var isPresenter = false;
+        var askedQuestion = false;
+
         Game.fps = 10;
 
         //set up user id and the time the user was created
@@ -128,7 +132,7 @@
 
 
         function Start() {
-            console.log("start");
+            //console.log("start");
 
             ToggleMic(false);
             startRan = true;
@@ -151,7 +155,7 @@
         }
 
         function ToggleMic(value) {
-            console.log("turn mic to "+ value);
+            //console.log("turn mic to "+ value);
             easyrtc.enableMicrophone(value);
         }
 
@@ -176,11 +180,11 @@
             var key = e.keyCode ? e.keyCode : e.which;
 
             if (key == 38) {
-                console.log("turn mic on");
+                //console.log("turn mic on");
                 ToggleMic(true);
                 //NAF.connection.broadcastDataGuaranteed(dataType, data);
             } else if (key == 40) {
-                console.log("turn mic off");
+                //console.log("turn mic off");
                 ToggleMic(false);
             }
         }
